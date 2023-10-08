@@ -1,0 +1,26 @@
+1. Application Port:
+    a. FrontEnd: 3000;
+    b. Backend : 8080;
+    c. ElasticSeach Container : 9200; locally in Docker
+    d. Kibana Container : 5601; locally in Docker
+
+2. Api's:
+   
+    a. Getting all book: localhost:8080/books
+      This will give you all books
+    b. Get a single book  localhost:8080/books/:id
+       The id will query on mongodb for particular book whose ObjectId matched with req.param.id;
+    c. Create a Book localhost:8080/books
+       It will add in mongodb database and also index the book in elastic search;
+    d. Update the book localhost:8080/books/:id
+       It will update the book in mongodb as weel as in elasticsearch;
+    e. Delete the book localhost/book/:id
+       It will delete a particular entry from both elasticsearch and mongodb
+    
+    Note: For operation on elsticsearch i'm using pre and post hook of mongoose.
+
+
+
+      
+   
+  

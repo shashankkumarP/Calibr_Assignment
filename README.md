@@ -42,7 +42,8 @@ Before you begin, ensure you have met the following requirements:
       - const { Client } = require("@elasticsearch/elasticsearch");
       - const client = new Client({ node: "http://localhost:9200" });
    
-   #### FrontEnd: api: http://localhost:3000
+   #### FrontEnd: port: http://localhost:3000
+   #### BackEnd: port: http://localhost:8080
 
    
  ## ElasticSearch Feature: 
