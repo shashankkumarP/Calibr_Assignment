@@ -7,6 +7,7 @@ interface FormData {
   Author: string;
   PublicationYear: any;
   Isbn: string;
+  custom_id:string;
   Description: string;
 }
 interface InitialData {
@@ -15,6 +16,7 @@ interface InitialData {
   Author: string;
   PublicationYear: any;
   Isbn: string;
+  custom_id:string;
   Description: string;
   new: boolean;
 }
@@ -29,6 +31,7 @@ function Addbook({ closeModal, Initial }: ChildProps) {
     Title: Initial.Title,
     Author: Initial.Author,
     PublicationYear: Initial.PublicationYear,
+    custom_id:Initial.custom_id,
     Isbn: Initial.Isbn,
     Description: Initial.Description,
   });
@@ -87,14 +90,13 @@ function Addbook({ closeModal, Initial }: ChildProps) {
       return;
     }
     let d_output = { ...formData };
-    d_output["PublicationYear"] = () => {
-      let a = formData.PublicationYear;
-      let changed_data = a.split("-").join("");
+    let publication_year_check = formData.PublicationYear;
+      let changed_data = publication_year_check.split("-").join("");
       changed_data = Number(changed_data);
-      return changed_data;
-    };
-
-    console.log(formData);
+    d_output.PublicationYear = changed_data;
+    
+    console.log(Initial);
+    console.log(d_output)
     if (Initial.new) {
       fetch("http://localhost:8080/books", {
         method: "POST",
@@ -163,7 +165,7 @@ function Addbook({ closeModal, Initial }: ChildProps) {
           )}
           <div className="form-gr">
             <label>Publication Year:</label>
-            <input type="date" name="PublicationYear" onChange={handleChange} />
+            <input type="date" name="PublicationYear" value={formData.PublicationYear} onChange={handleChange} />
           </div>
           {validation.PublicationYear && (
             <p className="error">Publication Year is mandatory.</p>
@@ -201,6 +203,4 @@ function Addbook({ closeModal, Initial }: ChildProps) {
 }
 
 export default Addbook;
-function e(reason: any): PromiseLike<never> {
-  throw new Error("Function not implemented.");
-}
+

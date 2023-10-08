@@ -9,21 +9,21 @@ const Book_router = require("./router/Book");
 const MongoURL = process.env.MONGO_URL;
 const PORT = process.env.PORT;
 
+
 app.use("/books", Book_router);
-app.use('/book/search',require('./router/Search'))
+
+app.use('/books/search',require('./router/Search'))
 
 app.get("/", async (req, res) => {
+  
   return res.send({ message: "hello" });
 });
 
-app.listen(PORT || "8080", async () => {
-  await mongoose.connect(`${MongoURL}`, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true
-   });
+app.listen(PORT || "8080", async () => { 
+
+  await mongoose.connect(`${MongoURL}`); 
   console.log("listening");
 });
+
 
 

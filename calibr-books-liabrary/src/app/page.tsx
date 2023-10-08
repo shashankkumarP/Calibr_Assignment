@@ -4,6 +4,7 @@ import BookCart from "./component/BookCart";
 import "./globals.css";
 import Addbook from "./pages/Addbook/page";
 import Link from "next/link";
+import {nanoid} from "nanoid"
 
 interface Book {
   _id: string;
@@ -20,66 +21,49 @@ interface InitialData {
   Author: string;
   PublicationYear: string;
   Isbn: string;
+  custom_id:string
   Description: string;
   new: boolean;
 }
 
 export let handlepublicationyear = (ob: any) => {
   let a = ob.PublicationYear.toString().split("");
-  let date = a.slice(0, 2).join("");
-  let month = a.slice(2, 4).join("");
-  let year = a.slice(4, 7).join("");
-  let exact = date + month + year;
+  let date = a.slice(0, 4).join("");
+  let month = a.slice(4, 6).join("");
+  let year = a.slice(6, 8).join("");
+  let exact = date +"-"+ month +"-"+ year;
   ob["PublicationYear"] = exact;
   return ob;
 };
 
 export default function Home() {
-  const [books, setBooks] = useState<Book[]>([
-    {
-      _id: "3434",
-      Title: "sd",
-      Author: "df",
-      PublicationYear: `12-01-2023`,
-      Isbn: "dfd",
-      Description: "dfdfdsfd dfdfd a dfds df",
-    },
-    {
-      _id: "34434",
-      Title: "sd",
-      Author: "df",
-      PublicationYear: `12-01-2023`,
-      Isbn: "dfdd",
-      Description: "df",
-    },
-    {
-      _id: "34dfd434",
-      Title: "sd",
-      Author: "df",
-      PublicationYear: `12-01-2023`,
-      Isbn: "dfddsd",
-      Description: "df dfd dfa fdfd adf",
-    },
-    {
-      _id: "344ff34",
-      Title: "sd",
-      Author: "df",
-      PublicationYear: `12-01-2023`,
-      Isbn: "dfdfdd",
-      Description: "df",
-    },
-  ]);
+  const [books, setBooks] = useState<Book[]>([]);
   let [Initial, setInitial] = useState<InitialData>({
     _id: "",
     Title: "",
     Author: "",
     PublicationYear: "",
     Isbn: "",
+    custom_id:nanoid(32),
     Description: "",
     new: true,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  let [display,setDisplay] = useState(false)
+  let handledelete = async (book:any) => {
+    setDisplay(!display);
+    console.log(book);
+    try {
+      let data = await fetch(`http://localhost:8080/books/${book._id}`, {
+        method: "DELETE",
+      });
+      let response = await data.json();
+      response = response.data;
+    } catch (e) {
+      console.log("error", e);
+    }
+  };
+ 
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -95,10 +79,10 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:8080");
+        const response = await fetch("http://localhost:8080/books");
         let data = await response.json();
-        console.log(data);
-        data = data.data;
+        console.log(data.message);
+        data = data.message;
         const output = data.map((el: any) => {
           return handlepublicationyear(el);
         });
@@ -108,8 +92,10 @@ export default function Home() {
       }
     }
 
-    // fetchData();
-  }, []);
+
+    fetchData();
+  },[display,Initial]);
+ 
 
   return (
     <div>
@@ -126,11 +112,11 @@ export default function Home() {
             </Link>
           </div>
           <div>
-            <div className="book-list">
+            {books.length!=0 ?<div className="book-list">
               {books.map((book) => (
-                <BookCart handleedit={handleedit} key={book._id} book={book} />
+                <BookCart handleedit={handleedit} handledelete={handledelete}  key={book._id} book={book} />
               ))}
-            </div>
+            </div>:<h1 style={{textAlign:'center'}} >No Books Present</h1>}
           </div>
         </div>
       ) : (

@@ -16,42 +16,19 @@ interface Book {
 
 const Search = () => {
   const [query, setQuery] = useState<any>("");
-  const [searchResults, setSearchResults] = useState<Book[]>([
-    {
-      _id: "3434",
-      Title: "sd",
-      Author: "df",
-      PublicationYear: "12-01-1995",
-      Isbn: "123",
-      Description: "dfdfdsfd dfdfd a dfds df",
-    },
-    {
-      _id: "34434",
-      Title: "sd",
-      Author: "df",
-      PublicationYear: "12-01-1995",
-      Isbn: "3d3e",
-      Description: "df",
-    },
-    {
-      _id: "34dfd434",
-      Title: "sd",
-      Author: "df",
-      PublicationYear: "12-01-1995",
-      Isbn: "3f",
-      Description: "df dfd dfa fdfd adf",
-    },
-  ]);
+  const [searchResults, setSearchResults] = useState<Book[]>([]);
 
   const handleSearch = async () => {
     try {
-      const response = await fetch(`http://localhost:9200?q=${query}`);
+      console.log(query);
+      const response = await fetch(`http://localhost:8080/books/search?q=${query}`);
       let data = await response.json();
+      console.log(data);
       data = data.data;
-      let ouput = data.map((el: any) => {
+      let output = data.map((el: any) => {
         return handlepublicationyear(el);
       });
-      setSearchResults(data);
+      setSearchResults(output);
     } catch (error) {
       console.error("Error searching:", error);
     }
@@ -67,9 +44,7 @@ const Search = () => {
     return () => clearTimeout(timer);
   }, [query]);
 
-  // function setQuery(value:any) {
-  //   throw new Error("Function not implemented.");
-  // }
+ 
 
   return (
     <div>
@@ -92,7 +67,7 @@ const Search = () => {
       </div>
       <div className="search-results">
         {searchResults.map((book) => (
-          <BookCart key={book._id} book={book} handleedit={undefined} />
+          <BookCart key={book._id} book={book} handledelete={undefined} handleedit={undefined} />
         ))}
       </div>
     </div>
