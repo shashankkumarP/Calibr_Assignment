@@ -50,7 +50,7 @@ Book_schema.post("save", (doc) => {
 });
 
 // Book_schema.pre("deleteOne", (doc,next) => {
-//   console.log(doc,'here form shcema delete');
+//   console.log(doc,'here form schema delete');
 //   removeBookFromElasticsearch(a);
 // console.log(doc,this, "removed from elasticsearch");
 // next();
