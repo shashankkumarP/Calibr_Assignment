@@ -49,22 +49,22 @@ async function updateBookInElasticsearch(custom_id, updatedFields) {
 }
 
 
-async function removeBookFromElasticsearch(fieldName,fieldValue) {
+async function removeBookFromElasticsearch(fieldValue) {
   try {
     await client.deleteByQuery({
-      index: indexName,
+      index: 'books',
       body: {
         query: {
           match: {
-            [fieldName]: fieldValue,
+            "custom_id": fieldValue,
           },
         },
       },
     });
     
-    console.log(`Document with ${fieldName} '${fieldValue}' deleted successfully.`);
+    console.log(`Document with custom_id '${fieldValue}' deleted successfully.`);
   } catch (error) {
-    console.error(`Error deleting document with ${fieldName} '${fieldValue}':`, error);
+    console.error(`Error deleting document with custom_id '${fieldValue}':`, error);
     throw error;
   }
 }

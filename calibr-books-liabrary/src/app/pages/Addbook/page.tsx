@@ -1,13 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./Addbook.css";
+import { DisplayContext } from "@/app/context/Displaycontext";
 
 interface FormData {
   Title: string;
   Author: string;
   PublicationYear: any;
   Isbn: string;
-  custom_id:string;
+  custom_id: string;
   Description: string;
 }
 interface InitialData {
@@ -16,7 +17,7 @@ interface InitialData {
   Author: string;
   PublicationYear: any;
   Isbn: string;
-  custom_id:string;
+  custom_id: string;
   Description: string;
   new: boolean;
 }
@@ -31,10 +32,11 @@ function Addbook({ closeModal, Initial }: ChildProps) {
     Title: Initial.Title,
     Author: Initial.Author,
     PublicationYear: Initial.PublicationYear,
-    custom_id:Initial.custom_id,
+    custom_id: Initial.custom_id,
     Isbn: Initial.Isbn,
     Description: Initial.Description,
   });
+  let { handledisplay } = useContext<any>(DisplayContext);
 
   const [validation, setValidation] = useState<{
     Title: boolean;
@@ -52,9 +54,6 @@ function Addbook({ closeModal, Initial }: ChildProps) {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
-    console.log(value, typeof value);
-
     setFormData({ ...formData, [name]: value });
     if (validation.Title && name == "Title")
       setValidation({ ...validation, Title: false });
@@ -91,12 +90,13 @@ function Addbook({ closeModal, Initial }: ChildProps) {
     }
     let d_output = { ...formData };
     let publication_year_check = formData.PublicationYear;
-      let changed_data = publication_year_check.split("-").join("");
-      changed_data = Number(changed_data);
+    let changed_data = publication_year_check.split("-").join("");
+    changed_data = Number(changed_data);
     d_output.PublicationYear = changed_data;
-    
-    console.log(Initial);
-    console.log(d_output)
+    if (d_output.Description.length < 10) {
+      alert("Description should be of 10 digit");
+      return;
+    }
     if (Initial.new) {
       fetch("http://localhost:8080/books", {
         method: "POST",
@@ -107,12 +107,12 @@ function Addbook({ closeModal, Initial }: ChildProps) {
       })
         .then((res) => res.json())
         .then((res) => {
-          let data = res.data;
-          console.log(data, "---", res);
+          alert("book added successfully");
+
+          handledisplay();
         })
         .catch((e) => {
           alert("Error Book Not saved");
-          console.log(e);
         });
     } else {
       fetch(`http://localhost:8080/books/${Initial._id}`, {
@@ -124,12 +124,12 @@ function Addbook({ closeModal, Initial }: ChildProps) {
       })
         .then((res) => res.json())
         .then((res) => {
-          let data = res.data;
-          console.log(data, "---", res);
+          alert("book modified");
+
+          handledisplay();
         })
         .catch((e) => {
           alert("Error Book Not saved");
-          console.log(e);
         });
     }
 
@@ -165,7 +165,12 @@ function Addbook({ closeModal, Initial }: ChildProps) {
           )}
           <div className="form-gr">
             <label>Publication Year:</label>
-            <input type="date" name="PublicationYear" value={formData.PublicationYear} onChange={handleChange} />
+            <input
+              type="date"
+              name="PublicationYear"
+              value={formData.PublicationYear}
+              onChange={handleChange}
+            />
           </div>
           {validation.PublicationYear && (
             <p className="error">Publication Year is mandatory.</p>
@@ -203,4 +208,3 @@ function Addbook({ closeModal, Initial }: ChildProps) {
 }
 
 export default Addbook;
-

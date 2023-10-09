@@ -10,6 +10,7 @@ interface Book {
   Title: string;
   Author: string;
   PublicationYear: string;
+  custom_id: string;
   Isbn: string;
   Description: string;
 }
@@ -21,7 +22,9 @@ const Search = () => {
   const handleSearch = async () => {
     try {
       console.log(query);
-      const response = await fetch(`http://localhost:8080/books/search?q=${query}`);
+      const response = await fetch(
+        `http://localhost:8080/books/search?q=${query}`
+      );
       let data = await response.json();
       console.log(data);
       data = data.data;
@@ -44,8 +47,6 @@ const Search = () => {
     return () => clearTimeout(timer);
   }, [query]);
 
- 
-
   return (
     <div>
       <div className="heading">
@@ -67,7 +68,7 @@ const Search = () => {
       </div>
       <div className="search-results">
         {searchResults.map((book) => (
-          <BookCart key={book._id} book={book} handledelete={undefined} handleedit={undefined} />
+          <BookCart key={book._id} book={book} handleedit={undefined} />
         ))}
       </div>
     </div>

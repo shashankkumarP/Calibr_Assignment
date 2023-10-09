@@ -9,8 +9,7 @@ const {
 const Book_schema = new Schema({
   Title: {
     type: String,
-    required: [true, "Please give Title"],
-    minlength: [5, "length of title should be minimun 5"],
+    required: [true, "Please give Title"]
   },
   Author: { type: String, required: true },
   PublicationYear: { type: Number, required: true },
@@ -38,20 +37,23 @@ const Book_schema = new Schema({
   },
 });
 Book_schema.post("findOneAndUpdate", (doc) => {
-  let id = doc.custom_id;
+  
   console.log('update',doc.custom_id)
   updateBookInElasticsearch(doc.custom_id, doc);
   console.log(doc, "updated in elasticsearch");
 });
 
 Book_schema.post("save", (doc) => {
+    console.log('create',doc)
   indexBookInElasticsearch(doc);
   console.log(doc, "added in elasticsearch");
 });
 
-Book_schema.post("deleteOne", (doc) => {
-  console.log(doc.custom_id);
-  removeBookFromElasticsearch('custom_id',doc.custom_id);
-  console.log(doc, "removed from elasticsearch");
-});
+// Book_schema.pre("deleteOne", (doc,next) => {
+//   console.log(doc,'here form shcema delete');
+//   removeBookFromElasticsearch(a);
+// console.log(doc,this, "removed from elasticsearch");
+// next();
+  
+// });
 module.exports = model("book", Book_schema);

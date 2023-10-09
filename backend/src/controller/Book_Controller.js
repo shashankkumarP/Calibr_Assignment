@@ -1,12 +1,11 @@
 const Book_model = require("../model/Book_schema");
+const {removeBookFromElasticsearch} = require('../ElasticSeach')
 
 const BookController = {
   getbooks: async (req, res) => {
     try {
       const book = await Book_model.find();
-      if (book.length == 0) {
-        return res.status(400).send({ message: "liabrary is Empty" });
-      }
+      
       return res.status(200).send({ message: book });
     } catch (e) {
       console.log(e);
@@ -62,12 +61,12 @@ const BookController = {
     let id = req.params.id;
     console.log(id);
     try {
-      let result = await Book_model.deleteOne({ _id: id });
+      let result = await Book_model.deleteOne({ custom_id: id });
       // handling by post method in mongodb schema
-      // await removeBookFromElasticsearch(req.params.id);
-      return res
-        .status(204)
-        .send({ message: "Modification done successfully" });
+      await removeBookFromElasticsearch(req.params.id);
+      console.log(result);
+      if(result) return res.status(204).send({ message: "Modification done successfully" });
+      
     } catch (e) {
       console.log("Error", e);
       return res.status(500).send({ message: e.message });
