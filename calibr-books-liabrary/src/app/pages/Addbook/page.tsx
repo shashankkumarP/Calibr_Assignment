@@ -97,8 +97,9 @@ function Addbook({ closeModal, Initial }: ChildProps) {
       alert("Description should be of 10 digit");
       return;
     }
+    console.log(d_output);
     if (Initial.new) {
-      fetch("http://localhost:8080/books", {
+      fetch("http://localhost:8080/book", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

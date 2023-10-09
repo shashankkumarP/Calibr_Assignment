@@ -13,7 +13,7 @@ const Book_schema = new Schema({
   },
   Author: { type: String, required: true },
   PublicationYear: { type: Number, required: true },
-  custom_id:{type:String,default:()=>nanoid(),unique:true},
+  custom_id:{type:String,required:true,unique:true},
   Isbn: {
     type: String,
     default: () => {
